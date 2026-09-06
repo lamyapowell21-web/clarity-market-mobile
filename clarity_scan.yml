@@ -1,0 +1,54 @@
+
+name: Clarity market scan
+
+on:
+  schedule:
+    - cron: '35-59/5 9 * * 1-5'
+      timezone: 'America/New_York'
+    - cron: '*/5 10-15 * * 1-5'
+      timezone: 'America/New_York'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Choose test to send a phone test notification'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - test
+          - scan
+          - dry-run
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    steps:
+      - name: Get Clarity
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run Clarity scanner
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          CLARITY_APP_URL: ${{ secrets.CLARITY_APP_URL }}
+          MAX_TRADE_AMOUNT: ${{ secrets.MAX_TRADE_AMOUNT }}
+          MAX_PLANNED_LOSS: ${{ secrets.MAX_PLANNED_LOSS }}
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.mode }}" = "test" ]; then
+            python cloud_scanner.py --test
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.mode }}" = "dry-run" ]; then
+            python cloud_scanner.py --dry-run
+          else
+            python cloud_scanner.py
+          fi
