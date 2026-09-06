@@ -1,0 +1,8 @@
+streamlit>=1.60
+yfinance>=0.2.65
+pandas>=2.2
+numpy>=1.26
+altair>=5.0
+scipy>=1.13
+scikit-learn>=1.5
+pandas-market-calendars>=4.4
