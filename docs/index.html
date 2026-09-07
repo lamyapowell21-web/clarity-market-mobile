@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#E88BB3" />
+  <title>Clarity</title>
+  <link rel="manifest" href="manifest.webmanifest?v=7" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/clarity-icon-192-v7.png" />
+  <link rel="apple-touch-icon" href="icons/clarity-icon-192-v7.png" />
+  <style>
+    :root{
+      --ink:#5F4450;
+      --muted:#8B6D78;
+      --pink:#E88BB3;
+      --pink-deep:#D96A9C;
+      --yellow:#F8E38E;
+      --paper:#FFFDF6;
+      --paper2:#FFF8FB;
+      --line:#F3DDE8;
+      --shadow:0 10px 35px rgba(197,120,154,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink)}
+    body{
+      min-height:100dvh;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(255,244,184,.68), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(255,232,242,.70), transparent 27%),
+        linear-gradient(180deg,var(--paper),#fffef9 42%,var(--paper2));
+    }
+    .app{height:100dvh;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+    header{
+      display:flex;align-items:center;gap:.75rem;padding:calc(.64rem + env(safe-area-inset-top)) .9rem .64rem;
+      background:rgba(255,252,246,.88);backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(243,221,232,.92);
+      box-shadow:0 4px 18px rgba(145,57,111,.07);
+    }
+    .brand{display:flex;align-items:center;gap:.7rem;min-width:0;flex:1}
+    .logo{width:42px;height:42px;border-radius:14px;display:block;object-fit:contain;object-position:center center;flex:none;box-shadow:0 5px 16px rgba(195,75,145,.18)}
+    .brand-text{min-width:0;display:flex;flex-direction:column;justify-content:center}
+    .name{font-size:1.08rem;font-weight:850;letter-spacing:-.025em;line-height:1.06;color:#D96A9C;}
+    .sub{font-size:.72rem;color:var(--muted);margin-top:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .icon-btn{
+      width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.9);
+      color:var(--ink);font-size:1rem;display:grid;place-items:center;box-shadow:0 4px 14px rgba(145,57,111,.07);
+    }
+    .frame-wrap{position:relative;overflow:hidden;background:white}
+    iframe{width:100%;height:100%;border:0;display:block;background:white;}
+    .setup{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255,244,184,.72), transparent 34%),
+        radial-gradient(circle at 90% 10%, rgba(255,232,242,.75), transparent 31%),
+        linear-gradient(180deg,#fffdf7,#fff);}
+    .setup-card{width:min(520px,100%);padding:1.15rem;border-radius:24px;border:1px solid var(--line);background:rgba(255,255,255,.94);box-shadow:var(--shadow);}
+    .setup-logo{width:68px;height:68px;border-radius:22px;display:block;margin-bottom:.8rem;object-fit:contain;box-shadow:0 8px 23px rgba(195,75,145,.18)}
+    h1{font-size:1.55rem;margin:.1rem 0 .3rem;letter-spacing:-.035em;color:#D96A9C;}
+    p{color:var(--muted);line-height:1.45}
+    label{display:block;font-size:.84rem;font-weight:750;margin:.9rem 0 .38rem}
+    input{width:100%;padding:.9rem .95rem;border-radius:15px;border:1px solid #EFD6E3;background:#fffdfb;color:var(--ink);font-size:16px;outline:none;}
+    input:focus{border-color:#E88BB3;box-shadow:0 0 0 4px rgba(232,139,179,.10)}
+    .primary{width:100%;margin-top:.7rem;padding:.9rem;border-radius:15px;border:0;background:linear-gradient(90deg,#E88BB3,#F8E38E);color:#5F4450;font-weight:850;font-size:.98rem;box-shadow:0 8px 20px rgba(190,65,138,.16);}
+    .hint{font-size:.78rem;color:var(--muted);margin-top:.7rem}
+    .error{font-size:.8rem;color:#A74973;margin-top:.5rem;display:none}
+    .offline{position:absolute;left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom));padding:.7rem .8rem;border-radius:15px;background:#FFF6D9;color:#6F5A1A;border:1px solid #F3E1A0;display:none;font-size:.82rem;box-shadow:var(--shadow);}
+    .menu{position:absolute;right:.75rem;top:calc(4.4rem + env(safe-area-inset-top));width:220px;padding:.5rem;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.97);box-shadow:var(--shadow);display:none;}
+    .menu button{width:100%;text-align:left;border:0;background:transparent;padding:.75rem;border-radius:11px;color:var(--ink);font-size:.9rem;}
+    .menu button:active{background:#fff8ee}
+    @media(min-width:900px){.app{max-width:860px;margin:auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <img class="logo" src="icons/clarity-icon-192-v7.png" alt="" />
+        <div class="brand-text">
+          <div class="name">Clarity</div>
+          <div class="sub" id="statusText">Live dashboard</div>
+        </div>
+      </div>
+      <button class="icon-btn" id="refreshBtn" aria-label="Refresh">↻</button>
+      <button class="icon-btn" id="menuBtn" aria-label="Menu">•••</button>
+    </header>
+
+    <div class="frame-wrap">
+      <iframe id="clarityFrame" title="Clarity dashboard" allow="clipboard-read; clipboard-write"></iframe>
+
+      <div class="setup" id="setup">
+        <div class="setup-card">
+          <img class="setup-logo" src="icons/clarity-icon-192-v7.png" alt="Clarity" />
+          <h1>Connect your Clarity dashboard ✨</h1>
+          <p>Paste the <strong>.streamlit.app</strong> address that already opens your Clarity dashboard.</p>
+          <label for="streamlitUrl">Your Streamlit Clarity link</label>
+          <input id="streamlitUrl" inputmode="url" autocomplete="url" placeholder="https://your-app.streamlit.app" />
+          <button class="primary" id="saveBtn">Connect Clarity</button>
+          <div class="error" id="errorText">That doesn't look like a valid https:// link.</div>
+          <div class="hint">You only have to do this once on this phone.</div>
+        </div>
+      </div>
+
+      <div class="offline" id="offline">Clarity needs an internet connection to load live market information.</div>
+    </div>
+
+    <div class="menu" id="menu">
+      <button id="openExternal">Open dashboard in browser ↗</button>
+      <button id="changeUrl">Change Streamlit link</button>
+      <button id="reloadApp">Reload Clarity</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "clarity_streamlit_url_v1";
+    const frame = document.getElementById("clarityFrame");
+    const setup = document.getElementById("setup");
+    const input = document.getElementById("streamlitUrl");
+    const error = document.getElementById("errorText");
+    const menu = document.getElementById("menu");
+    const statusText = document.getElementById("statusText");
+
+    function validUrl(value) {
+      try {
+        const u = new URL(value);
+        return u.protocol === "https:";
+      } catch (e) { return false; }
+    }
+    function embedUrl(value) {
+      const u = new URL(value);
+      u.searchParams.set("embed", "true");
+      u.searchParams.append("embed_options", "light_theme");
+      return u.toString();
+    }
+    function loadSaved() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && validUrl(saved)) {
+        setup.style.display = "none";
+        frame.src = embedUrl(saved);
+        statusText.textContent = "Live dashboard";
+      } else {
+        setup.style.display = "flex";
+      }
+    }
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      const value = input.value.trim();
+      if (!validUrl(value)) {
+        error.style.display = "block";
+        return;
+      }
+      error.style.display = "none";
+      localStorage.setItem(STORAGE_KEY, value);
+      setup.style.display = "none";
+      frame.src = embedUrl(value);
+      statusText.textContent = "Live dashboard";
+    });
+    document.getElementById("refreshBtn").addEventListener("click", () => { if (frame.src) frame.src = frame.src; });
+    document.getElementById("menuBtn").addEventListener("click", () => { menu.style.display = menu.style.display === "block" ? "none" : "block"; });
+    document.getElementById("openExternal").addEventListener("click", () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) window.open(saved, "_blank", "noopener");
+      menu.style.display = "none";
+    });
+    document.getElementById("changeUrl").addEventListener("click", () => {
+      input.value = localStorage.getItem(STORAGE_KEY) || "";
+      setup.style.display = "flex";
+      menu.style.display = "none";
+    });
+    document.getElementById("reloadApp").addEventListener("click", () => location.reload());
+    document.addEventListener("click", e => {
+      if (!menu.contains(e.target) && e.target.id !== "menuBtn") menu.style.display = "none";
+    });
+    function updateOnline() {
+      document.getElementById("offline").style.display = navigator.onLine ? "none" : "block";
+    }
+    window.addEventListener("online", updateOnline);
+    window.addEventListener("offline", updateOnline);
+    updateOnline();
+    loadSaved();
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+    }
+  </script>
+</body>
+</html>
