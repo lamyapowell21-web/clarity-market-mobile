@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "status": "needs_recalibration",
+  "ready_for_alerts": false,
+  "message": "Clarity v12 is installed. Run the Clarity evidence calibration workflow once to generate the stricter day-split, event-based model."
+}
