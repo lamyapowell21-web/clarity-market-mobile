@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "status": "missing",
+  "ready_for_alerts": false,
+  "message": "Run calibrate_engine.py (or the Clarity evidence calibration GitHub Action) to create the historical model."
+}
