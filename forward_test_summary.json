@@ -1,11 +1,15 @@
 {
   "version": 1,
   "method": "v13_live_shadow_forward_test",
-  "status": "collecting",
-  "events_total": 0,
+  "calibration_method": "v13_market_structure_multihorizon",
+  "calibration_generated_at": "2026-09-08T07:41:55.776964-04:00",
+  "horizon_minutes": 60,
+  "updated_at_et": "2026-09-08T09:56:33.884279-04:00",
+  "events_total": 1,
   "settled_events": 0,
-  "pending_events": 0,
+  "pending_events": 1,
   "ambiguous_events": 0,
   "distinct_settled_days": 0,
+  "status": "collecting",
   "note": "Shadow observations only. No trade alerts are enabled by this forward-test file."
 }
