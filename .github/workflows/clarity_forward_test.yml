@@ -1,0 +1,72 @@
+name: Clarity live shadow test
+
+on:
+  schedule:
+    - cron: '35-59/5 9 * * 1-5'
+      timezone: 'America/New_York'
+    - cron: '*/5 10-15 * * 1-5'
+      timezone: 'America/New_York'
+    - cron: '0-20/5 16 * * 1-5'
+      timezone: 'America/New_York'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Normal runs the live shadow test; self-test checks the code without market data.'
+        required: true
+        default: 'normal'
+        type: choice
+        options:
+          - normal
+          - self-test
+
+permissions:
+  contents: write
+
+concurrency:
+  group: clarity-live-shadow-test
+  cancel-in-progress: false
+
+jobs:
+  shadow-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Get Clarity
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run live shadow test
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.mode }}" = "self-test" ]; then
+            python forward_test.py --self-test
+          else
+            python forward_test.py
+          fi
+
+      - name: Save new shadow observations
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'self-test'
+        shell: bash
+        run: |
+          if git diff --quiet -- forward_test_events.csv forward_test_summary.json; then
+            echo "No new or newly-settled shadow observations."
+            exit 0
+          fi
+
+          git config user.name "Clarity Shadow Test"
+          git config user.email "actions@users.noreply.github.com"
+          git add forward_test_events.csv forward_test_summary.json
+          git commit -m "Update Clarity live shadow test"
+          git pull --rebase origin main
+          git push origin HEAD:main
