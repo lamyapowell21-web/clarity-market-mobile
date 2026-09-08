@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "method": "v13_live_shadow_forward_test",
+  "status": "collecting",
+  "events_total": 0,
+  "settled_events": 0,
+  "pending_events": 0,
+  "ambiguous_events": 0,
+  "distinct_settled_days": 0,
+  "note": "Shadow observations only. No trade alerts are enabled by this forward-test file."
+}
