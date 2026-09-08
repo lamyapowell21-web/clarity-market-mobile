@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "method": "v13_market_structure_multihorizon",
+  "status": "missing",
+  "ready_for_alerts": false,
+  "message": "Run the Clarity evidence calibration workflow to create the v13 untouched-test result."
+}
