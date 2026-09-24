@@ -1,0 +1,122 @@
+name: Clarity live shadow test
+
+on:
+  schedule:
+    - cron: '35-59/5 9 * * 1-5'
+      timezone: 'America/New_York'
+    - cron: '*/5 10-15 * * 1-5'
+      timezone: 'America/New_York'
+    - cron: '0-20/5 16 * * 1-5'
+      timezone: 'America/New_York'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Normal runs the live shadow test; self-test checks the code without market data.'
+        required: true
+        default: 'normal'
+        type: choice
+        options:
+          - normal
+          - self-test
+
+permissions:
+  contents: write
+
+concurrency:
+  group: clarity-live-shadow-test
+  cancel-in-progress: false
+
+jobs:
+  shadow-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Get Clarity code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Restore prior shadow data
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'self-test'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --heads origin shadow-data >/dev/null 2>&1; then
+            # actions/checkout may only configure a tracking ref for `main`.
+            # Fetch shadow-data explicitly into a remote-tracking ref.
+            git fetch origin +refs/heads/shadow-data:refs/remotes/origin/shadow-data
+
+            git show refs/remotes/origin/shadow-data:forward_test_events.csv               > forward_test_events.csv 2>/dev/null || true
+            git show refs/remotes/origin/shadow-data:forward_test_summary.json               > forward_test_summary.json 2>/dev/null || true
+          fi
+
+          cp forward_test_events.csv /tmp/forward_test_events.before.csv
+          cp forward_test_summary.json /tmp/forward_test_summary.before.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run live shadow test
+        shell: bash
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          CLARITY_APP_URL: ${{ secrets.CLARITY_APP_URL }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.mode }}" = "self-test" ]; then
+            python forward_test.py --self-test
+          else
+            python forward_test.py
+          fi
+
+      - name: Save shadow data without redeploying Streamlit
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'self-test'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if cmp -s forward_test_events.csv /tmp/forward_test_events.before.csv &&              cmp -s forward_test_summary.json /tmp/forward_test_summary.before.json; then
+            echo "No new or newly-settled shadow observations."
+            exit 0
+          fi
+
+          cp forward_test_events.csv /tmp/forward_test_events.csv
+          cp forward_test_summary.json /tmp/forward_test_summary.json
+
+          git reset --hard HEAD
+          git clean -fd
+
+          git config user.name "Clarity Shadow Test"
+          git config user.email "actions@users.noreply.github.com"
+
+          if git ls-remote --exit-code --heads origin shadow-data >/dev/null 2>&1; then
+            git fetch origin +refs/heads/shadow-data:refs/remotes/origin/shadow-data
+            git switch -C shadow-data refs/remotes/origin/shadow-data
+          else
+            git switch --orphan shadow-data
+            git rm -rf . || true
+          fi
+
+          cp /tmp/forward_test_events.csv forward_test_events.csv
+          cp /tmp/forward_test_summary.json forward_test_summary.json
+
+          git add forward_test_events.csv forward_test_summary.json
+
+          if git diff --cached --quiet; then
+            echo "Shadow-data branch already has these results."
+            exit 0
+          fi
+
+          git commit -m "Update Clarity live shadow test"
+          git push origin HEAD:shadow-data
+
+          echo "Saved shadow observations to the shadow-data branch."
+          echo "Main was not changed, so this does not trigger a Streamlit code redeploy."
