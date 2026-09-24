@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "method": "v13_live_watch_forward_test",
+  "calibration_method": "v13_market_structure_multihorizon",
+  "calibration_generated_at": "2026-09-24T07:42:35.617126-04:00",
+  "horizon_minutes": 15,
+  "updated_at_et": "2026-09-24T14:22:46.585840-04:00",
+  "events_total": 33,
+  "settled_events": 31,
+  "pending_events": 0,
+  "ambiguous_events": 0,
+  "incomplete_session_events": 2,
+  "distinct_settled_days": 8,
+  "status": "promising_base_case",
+  "note": "Clarity Watch is paper/research mode. Forward statistics do not enable real-money trade recommendations.",
+  "positive_rate_base": 0.5161290322580645,
+  "positive_rate_stress": 0.45161290322580644,
+  "average_net_r_base": 0.1732031836419355,
+  "median_net_r_base": 0.0094158945,
+  "total_net_r_base": 5.3692986929,
+  "average_net_r_stress": 0.0038206919741935177,
+  "median_net_r_stress": -0.0747446244,
+  "total_net_r_stress": 0.11844145119999905,
+  "positive_final_return_rate": 0.5806451612903226,
+  "day_average_net_r_base": 0.12776446329928573,
+  "day_se_r": 0.10780773393299557,
+  "day_lcb80_r": 0.03720596679556945,
+  "stress_day_average_net_r": -0.01772078290672619,
+  "stress_day_se_r": 0.09549112876377062,
+  "stress_day_lcb80_r": -0.09793333106829352,
+  "by_horizon": {
+    "15": {
+      "events": 6,
+      "positive_rate_base": 0.3333333333333333,
+      "positive_rate_stress": 0.16666666666666666,
+      "average_net_r_base": -0.0854320632,
+      "average_net_r_stress": -0.15984071443333336
+    },
+    "60": {
+      "events": 25,
+      "positive_rate_base": 0.56,
+      "positive_rate_stress": 0.52,
+      "average_net_r_base": 0.23527564288399996,
+      "average_net_r_stress": 0.043099429511999986
+    }
+  }
+}
