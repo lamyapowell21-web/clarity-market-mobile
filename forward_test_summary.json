@@ -4,7 +4,7 @@
   "calibration_method": "v13_market_structure_multihorizon",
   "calibration_generated_at": "2026-10-26T13:32:09.560051-04:00",
   "horizon_minutes": 60,
-  "updated_at_et": "2026-10-26T15:31:37.714544-04:00",
+  "updated_at_et": "2026-10-26T15:44:10.200561-04:00",
   "events_total": 43,
   "settled_events": 41,
   "pending_events": 0,
